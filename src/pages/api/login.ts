@@ -26,7 +26,6 @@ export default function handler(
       session => session.user_id == user.id,
     )?.value;
     sessionValue && setCookie({ res }, 'loginId', sessionValue, options);
-    console.log('kami');
     res.status(200).send({ status: 'success' });
   } else {
     res.status(400).send({ status: 'failed' });
