@@ -1,6 +1,15 @@
 import type { NextPage } from 'next';
+import { useRouter } from 'next/router';
+import { useState } from 'react';
+
+type Form = {
+  name: string;
+  password: string;
+};
 
 const Home: NextPage = () => {
+  const [form, setForm] = useState<Form>({ name: '', password: '' });
+  const router = useRouter();
   return (
     <div className='login-page'>
       <div className='form'>
@@ -12,9 +21,34 @@ const Home: NextPage = () => {
             </p>
           </div>
         </div>
-        <form className='login-form' method='POST' action='./login.html'>
-          <input type='text' placeholder='ユーザ名' name='username' />
-          <input type='password' placeholder='パスワード' name='password' />
+        <form
+          className='login-form'
+          method='POST'
+          onSubmit={e => {
+            e.preventDefault();
+            fetch('/api/login', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(form),
+            }).then(res => {
+              if (res.status == 200) router.push('/mypage');
+            });
+          }}
+        >
+          <input
+            type='text'
+            placeholder='ユーザ名'
+            name='username'
+            value={form.name}
+            onChange={e => setForm({ ...form, name: e.target.value })}
+          />
+          <input
+            type='password'
+            placeholder='パスワード'
+            name='password'
+            value={form.password}
+            onChange={e => setForm({ ...form, password: e.target.value })}
+          />
           <button>ログイン</button>
           <p className='message'>
             まだ会員登録をされていないお客様
